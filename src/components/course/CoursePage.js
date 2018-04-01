@@ -15,6 +15,7 @@ class CoursePage extends React.Component {
     redirectToAddCoursePage(){
         browserHistory.push('/course');
     }
+
     render(){
         const {courses} = this.props;
          return(
@@ -26,7 +27,7 @@ class CoursePage extends React.Component {
                className = "btn btn-primary"
                onClick = {this.redirectToAddCoursePage}
                />
-            <CourseList courses = {courses} />
+            <CourseList  courses = {courses} />
            
         </div>
         );
