@@ -4,8 +4,9 @@ import { bindActionCreators } from 'redux';
 import * as courseActions from '../../actions/CourseAction';
 import CourseForm from './CourseForm';
 import toastr from 'toastr';
+import { authorFormatedDropDown} from '../../formateData/AuthorFormated';
 
-class ManageCoursePage extends React.Component{
+export class ManageCoursePage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -24,6 +25,18 @@ class ManageCoursePage extends React.Component{
         // }
       }
     
+      courseFormValid(){
+          let formIsValid = true;
+          let errors =  {};
+
+          if(this.state.course.title.length < 5){
+              errors.title="Title must be at least 5 characters.";
+              formIsValid = false;
+          }
+
+          this.setState({errors : errors});
+          return formIsValid;
+      }
 
     updateCourseState(event){
         const field =  event.target.name;
@@ -34,6 +47,10 @@ class ManageCoursePage extends React.Component{
 
     saveCourse(event){
         event.preventDefault();
+        if(!this.courseFormValid()){
+           return;
+        }
+
         this.setState({saving : true});
         this.props.actions.saveCourse(this.state.course)
         .then(() =>  this.redirect())
@@ -46,7 +63,7 @@ class ManageCoursePage extends React.Component{
           redirect(){
 
               this.setState({saving : false});
-              toastr.success('Course Saved!')
+              toastr.success('Course Saved!');
             this.context.router.push('/courses');
           }
 
@@ -84,23 +101,17 @@ function getCourseById(course, id){
 }
 
 function mapStateToProps(state, ownProps){
-    debugger
     const  courseId = ownProps.params.id;
 
     let course = {id : '' , watchHref : '' , title : '' , authorId : '' , lenght : '' , catagory : ''};
 if(courseId){
     course = getCourseById(state.courses, courseId);
 }
-    const authorFormatedDropDown = state.authors.map(author => {
-        return{
-            value : author.id,
-            text : author.firstName + ' ' + author.lastName
-        };
-    });
+    
 
     return{
         course : course,
-        authors : authorFormatedDropDown
+        authors : authorFormatedDropDown(state.authors)
     };
 }
 

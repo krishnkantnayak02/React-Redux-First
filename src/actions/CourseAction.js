@@ -44,7 +44,7 @@ export function saveCourse(course){
                       : dispatch(createCourseSuccess(savedCourse));
         }).catch(
             error => {
-                dispatch(ajaxCallError(error))
+                dispatch(ajaxCallError(error));
                 throw(error);
             }
         );
